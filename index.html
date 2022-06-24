@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        #map {
+            width: 1050px;
+            height: 788px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+      	<h1>Cuenca del R&#237o Macro</h1>
+       <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/cuenca_suavizada_0.js"></script>
+        <script src="data/cuenca_rios_1.js"></script>
+<!-- Plugin para etiquetas --------------------->
+	    <script src="./lib/leaflet.label.js"></script>
+  	    <link rel="stylesheet" href="./lib/leaflet.label.css" />
+<!-- Fin del plugin ---------------------------->
+        <script>
+
+//---------------------------------------------------------------
+// Referencia a openstreetmap.org
+        var osmAttrib = 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+	    osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+        var osm2 = L.tileLayer(osmUrl, {attribution: osmAttrib});
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1,
+	        layers: [osm2]
+        }).fitBounds([[-13.69687921829478,-74.43246844609634],[-13.39476674203331,-74.02150086800046]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+//---------------------------------------------------------
+        function pop_cuenca_suavizada_0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + 'id = ' + (feature.properties['DN'] !== null ? autolinker.link(feature.properties['DN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['area_cuen'] !== null ? autolinker.link('&#225rea = ' + feature.properties['area_cuen'].toLocaleString()) : '') + 'm&#178' + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + 'per = ' + (feature.properties['peri'] !== null ? autolinker.link(feature.properties['peri'].toLocaleString()) : '') + 'm' + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+//---------------------------------------------------------
+            layer.bindLabel(popupContent, {noHide: false});
+//---------------------------------------------------------
+        }
+
+        function style_cuenca_suavizada_0_0() {
+            return {
+                pane: 'pane_cuenca_suavizada_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0, 
+//---------------------------------------------
+                fill: false,
+//                fill: true,
+//---------------------------------------------
+                fillOpacity: 1,
+                fillColor: 'rgba(190,178,151,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_cuenca_suavizada_0');
+        map.getPane('pane_cuenca_suavizada_0').style.zIndex = 400;
+        map.getPane('pane_cuenca_suavizada_0').style['mix-blend-mode'] = 'normal';
+        var layer_cuenca_suavizada_0 = new L.geoJson(json_cuenca_suavizada_0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_cuenca_suavizada_0',
+            layerName: 'layer_cuenca_suavizada_0',
+            pane: 'pane_cuenca_suavizada_0',
+            onEachFeature: pop_cuenca_suavizada_0,
+            style: style_cuenca_suavizada_0_0,
+        });
+        bounds_group.addLayer(layer_cuenca_suavizada_0);
+        map.addLayer(layer_cuenca_suavizada_0);
+//---------------------------------------------
+        function pop_cuenca_rios_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + 'id = ' + (feature.properties['cat'] !== null ? autolinker.link(feature.properties['cat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['label'] !== null ? autolinker.link(feature.properties['label'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + 'lon = ' + (feature.properties['longitud'] !== null ? autolinker.link(feature.properties['longitud'].toLocaleString()) : '') + 'm' + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+//---------------------------------------------------------
+            layer.bindLabel(popupContent, {noHide: false});
+//---------------------------------------------------------
+        }
+		
+        function style_cuenca_rios_1_0() {
+            return {
+                pane: 'pane_cuenca_rios_1',
+                opacity: 1,
+                color: 'rgba(183,72,75,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+//---------------------------------------------
+                 weight: 3.0,
+//                 weight: 1.0,
+//---------------------------------------------
+                 fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_cuenca_rios_1');
+        map.getPane('pane_cuenca_rios_1').style.zIndex = 401;
+        map.getPane('pane_cuenca_rios_1').style['mix-blend-mode'] = 'normal';
+        var layer_cuenca_rios_1 = new L.geoJson(json_cuenca_rios_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_cuenca_rios_1',
+            layerName: 'layer_cuenca_rios_1',
+            pane: 'pane_cuenca_rios_1',
+            onEachFeature: pop_cuenca_rios_1,
+            style: style_cuenca_rios_1_0,
+        });
+        bounds_group.addLayer(layer_cuenca_rios_1);
+        map.addLayer(layer_cuenca_rios_1);
+        setBounds();
+        </script>
+    </body>
+</html>
